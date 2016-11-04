@@ -716,7 +716,7 @@ namespace ErrorCorrectingCodes
 		{
 			if (G.m_uiDegree == 0)
 			{
-				//求G=∏{i=1->T2}(x-w^i)
+				//calc G=∏{i=1->T2}(x-w^i)
 				CPoly EvalG;
 				EvalG.m_uiDegree = N - 1;
 				for (uint32_t i = 1; i <= T2; i++) EvalG[i] = CGFPrime::ZeroElement();
@@ -734,7 +734,7 @@ namespace ErrorCorrectingCodes
 			}
 			if (EvalQ.m_uiDegree == 0)
 			{
-				//求Q=(x-1)∏{i=T2+1->N-1}(x-w^i)
+				//calc Q=(x-1)∏{i=T2+1->N-1}(x-w^i)
 				EvalQ.m_uiDegree = T2;
 				EvalQ[0] = CGFPrime::UnitElement();
 				for (uint32_t i = T2 + 1; i<N; i++)
@@ -750,28 +750,6 @@ namespace ErrorCorrectingCodes
 			}
 
 			return true;
-		}
-
-		CPoly f(const CPoly& M)//利用EvalM的[1]->[T2]项插值求R
-		{
-			CPoly EvalR = this->Eval(M);
-			//设Q=(x-1)∏{i=T2+1->N-1}(x-w^i)
-			//deg(R*Q)=N-1,可插值求出R*Q,未知项全被填0
-			CPoly EvalQR;
-			EvalQR.m_uiDegree = T2;
-			EvalQR[0] = CGFPrime::ZeroElement();
-			for (uint32_t i = 1; i <= T2; i++) {
-				EvalQR[i] = EvalR[i] * EvalQ[i];
-			}
-			CPoly QR = this->Inter(EvalQR);
-			//计算QR/Q，试图将乘法逆转得到整除
-			//计算QR[i]/Q[i]时,Q[i]为0的项目用QR'[i]/Q'[i]代替
-			//因Q中无重复的因式,故Q'[i]不会为0
-			CPoly EvalQR_ = this->Eval(CPoly::Der(QR));
-			EvalR[0] = EvalQR_[0] / EvalQ_[0];
-			for (uint32_t i = T2 + 1; i<N; i++) EvalR[i] = EvalQR_[i] / EvalQ_[i];
-			CPoly R = this->Inter(EvalR);//R=QR/Q;
-			return R;
 		}
 
 	public:
@@ -794,10 +772,10 @@ namespace ErrorCorrectingCodes
 			}
 
 			CPoly EvalR = this->Eval(M);
-			//G|(M-R),故EvalM_R的[1]->[T2]为0,则EvalR的[1]->[T2]和EvalM的[1]->[T2]相等
-			//deg(R)=deg(G)-1=T2-1,所以[1]->[T2]已经足够确定R
-			//设Q=(x-1)∏{i=T2+1->N-1}(x-w^i)
-			//deg(R*Q)=N-1,可插值求出R*Q,未知项全被填0
+			//G|(M-R),so EvalM_R:[1]->[T2] is 0,then EvalR:[1]->[T2] equal EvalM:[1]->[T2]
+			//deg(R)=deg(G)-1=T2-1,so [1]->[T2] calc R is enough
+			//let Q=(x-1)∏{i=T2+1->N-1}(x-w^i)
+			//deg(R*Q)=N-1,can calc R*Q,just set unkonw [index] as 0
 			CPoly EvalQR;
 			EvalQR.m_uiDegree = T2;
 			EvalQR[0] = CGFPrime::ZeroElement();
@@ -805,9 +783,9 @@ namespace ErrorCorrectingCodes
 				EvalQR[i] = EvalQ[i] * EvalR[i];
 			}
 			CPoly QR = this->Inter(EvalQR);
-			//计算QR/Q，试图将乘法逆转得到整除
-			//计算QR[i]/Q[i]时,Q[i]为0的项目用QR'[i]/Q'[i]代替
-			//因Q中无重复的因式,故Q'[i]不会为0
+			//calc QR/Q，use deconvolution
+			//when calc QR[i]/Q[i],use QR'[i]/Q'[i] if Q[i] equal 0
+			//Q has none repeated factor,so Q'[i] will not equal 0
 			CPoly EvalQR_ = this->Eval(CPoly::Der(QR));
 			EvalR[0] = EvalQR_[0] / EvalQ_[0];
 			for (uint32_t i = T2 + 1; i<N; i++) EvalR[i] = EvalQR_[i] / EvalQ_[i];
