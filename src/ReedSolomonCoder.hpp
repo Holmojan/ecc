@@ -716,7 +716,7 @@ namespace ErrorCorrectingCodes
 		{
 			if (G.m_uiDegree == 0)
 			{
-				//calc G=กว{i=1->T2}(x-w^i)
+				//calc G=Mul{i=1->T2}(x-w^i)
 				CPoly EvalG;
 				EvalG.m_uiDegree = N - 1;
 				for (uint32_t i = 1; i <= T2; i++) EvalG[i] = CGFPrime::ZeroElement();
@@ -734,7 +734,7 @@ namespace ErrorCorrectingCodes
 			}
 			if (EvalQ.m_uiDegree == 0)
 			{
-				//calc Q=(x-1)กว{i=T2+1->N-1}(x-w^i)
+				//calc Q=(x-1)Mul{i=T2+1->N-1}(x-w^i)
 				EvalQ.m_uiDegree = T2;
 				EvalQ[0] = CGFPrime::UnitElement();
 				for (uint32_t i = T2 + 1; i<N; i++)
@@ -774,7 +774,7 @@ namespace ErrorCorrectingCodes
 			CPoly EvalR = this->Eval(M);
 			//G|(M-R),so EvalM_R:[1]->[T2] is 0,then EvalR:[1]->[T2] equal EvalM:[1]->[T2]
 			//deg(R)=deg(G)-1=T2-1,so [1]->[T2] calc R is enough
-			//let Q=(x-1)กว{i=T2+1->N-1}(x-w^i)
+			//let Q=(x-1)Mul{i=T2+1->N-1}(x-w^i)
 			//deg(R*Q)=N-1,can calc R*Q,just set unkonw [index] as 0
 			CPoly EvalQR;
 			EvalQR.m_uiDegree = T2;
