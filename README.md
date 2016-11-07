@@ -13,6 +13,7 @@ it run over the finite field GF(257) and GF(65537)
 fast calculation
 
 also, this two numbers, with a little modify, can fit byte and word perfect
+
 =============================================================================
 compile need c++11(at least gcc4.8 or vs2015)
 
