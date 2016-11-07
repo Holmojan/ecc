@@ -12,6 +12,7 @@ it run over the finite field GF(257) and GF(65537)
 257 and 65537, as known as the fermat number, can use fft transform for 
 fast calculation
 
+also, this two numbers, with a little modify, can fit byte and word perfect
 =============================================================================
 compile need c++11(at least gcc4.8 or vs2015)
 
